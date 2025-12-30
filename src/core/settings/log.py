@@ -56,39 +56,15 @@ LOG_CONFIG = {
             "filename": LOG_PATH / "sqlalchemy.log",
             "encoding": "utf-8",
         },
-        "qt-logger-file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "maxBytes": 1024 * 1024 * 50,
-            "backupCount": 3,
-            "formatter": "detailed",
-            "filename": LOG_PATH / "qt-logger.log",
-            "encoding": "utf-8",
-        },
         "robot-console": {
             "class": "logging.StreamHandler",
             "formatter": "robot",
-        },
-        "robot-file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "maxBytes": 1024 * 1024 * 50,
-            "backupCount": 3,
-            "formatter": "robot",
-            "filename": LOG_PATH / "robot.log",
-            "encoding": "utf-8",
         },
     },
     "loggers": {
         "app": {
             "level": LOG_LEVEL,
             'handlers': ["console", "file"],
-        },
-        "qt-logger": {
-            "level": LOG_LEVEL,
-            'handlers': ["console", "qt-logger-file"],
-        },
-        "robot": {
-            "level": LOG_LEVEL,
-            'handlers': ["robot-console", "robot-file"],
         },
         "alembic": {
             "level": LOG_LEVEL,
