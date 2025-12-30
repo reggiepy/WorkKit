@@ -1,0 +1,43 @@
+name: releaser
+run-name: ${{ github.actor }} is Build Actions 🚀
+
+on:
+  workflow_dispatch:
+    inputs:
+      cmd_extend:
+        description: "命令补充（patch, minor, major）"
+        required: false
+        default: "--patch"
+      cmd_options:
+        description: "命令选项"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install semantic-release
+        run: pip install python-semantic-release==10.2.0
+
+      - name: Create Release on GitHub
+        env:
+          SEMANTIC_RELEASE_REMOTE_TYPE: "github"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          semantic-release -c pyproject.toml ${{ github.event.inputs.cmd_options }} version ${{ github.event.inputs.cmd_extend }}

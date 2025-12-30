@@ -17,3 +17,13 @@ dependencies = [
     "pypdf (==4.3.1)",
     "reportlab (==4.2.2)"
 ]
+
+[tool.semantic_release]
+version_variables = [
+    "src/version.py:VERSION"
+]
+version_source = "tag"
+upload_to_pypi = false
+upload_to_release = true
+branch = "master"
+skip_build = true
