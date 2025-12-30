@@ -20,7 +20,7 @@ WorkKit 是一款基于 Python 3.10 和 PySide6 构建的桌面办公工具包�
 
 ## 🛠️ 安装说明 (Installation)
 
-本项目使用 [Poetry](https://python-poetry.org/) 或 uv 进行依赖管理。
+本项目使用 [uv](https://github.com/astral-sh/uv) 进行依赖管理。
 
 ### 前置要求
 *   Python >= 3.10
@@ -46,7 +46,6 @@ python src/main.py
 ```bash
 build.bat
 ```
-*注意：`build.bat` 中包含硬编码路径，使用前请根据本地环境修改 `PYTHONENVNAME` 和相关路径。*
 
 ## 🏗️ 技术架构 (Architecture)
 

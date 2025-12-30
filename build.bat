@@ -17,7 +17,7 @@ set "VENV_PATH=%BASE_DIR%\.venv"
 REM 检查虚拟环境
 if not exist "%VENV_PATH%\Scripts\activate.bat" (
     echo [错误] 找不到虚拟环境: %VENV_PATH%
-    echo 请确保已运行 ''uv sync' 创建了虚拟环境。
+    echo 请确保已运行 'uv sync' 创建了虚拟环境。
     pause
     exit /b 1
 )
