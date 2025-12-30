@@ -3,7 +3,7 @@
 # @Time : 2025/2/27 13:26
 __all__ = 'compiled', 'VERSION', 'version_info'
 
-VERSION = '1.1.0'
+VERSION = '1.0.0'
 
 try:
     import cython  # type: ignore

@@ -5,5 +5,4 @@
 from .base import *
 from .database import *
 from .log import *
-from .nsq import *
 from .alembic import *
