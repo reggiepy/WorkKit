@@ -1,69 +1,88 @@
 @echo off
-REM PyInstaller ´ò°ü½Å±¾
+chcp 65001 >nul
+setlocal
 
-REM ÉèÖÃ»ù´¡Â·¾¶
-set BASEPATH=%cd%
-set PYTHONPATH=%BASEPATH%
-set PYTHONENVNAME=WorkKit
+REM ==========================================
+REM WorkKit PyInstaller æ„å»ºè„šæœ¬
+REM ==========================================
 
-REM ¼¤»îĞéÄâ»·¾³
-@REM call activate %PYTHONENVNAME%
-call C:\Users\wt\AppData\Local\pypoetry\Cache\virtualenvs\workkit-0NqmBcOK-py3.10\Scripts\activate.bat
-if errorlevel 1 (
-    echo ´íÎó: ÎŞ·¨¼¤»îĞéÄâ»·¾³ %PYTHONENVNAME%
+REM è®¾ç½®é¡¹ç›®æ ¹ç›®å½•
+set "BASE_DIR=%~dp0"
+REM å»æ‰æœ«å°¾çš„åæ–œæ 
+if "%BASE_DIR:~-1%"=="\" set "BASE_DIR=%BASE_DIR:~0,-1%"
+
+REM è®¾ç½®è™šæ‹Ÿç¯å¢ƒè·¯å¾„
+set "VENV_PATH=%BASE_DIR%\.venv"
+
+REM æ£€æŸ¥è™šæ‹Ÿç¯å¢ƒ
+if not exist "%VENV_PATH%\Scripts\activate.bat" (
+    echo [é”™è¯¯] æ‰¾ä¸åˆ°è™šæ‹Ÿç¯å¢ƒ: %VENV_PATH%
+    echo è¯·ç¡®ä¿å·²è¿è¡Œ ''uv sync' åˆ›å»ºäº†è™šæ‹Ÿç¯å¢ƒã€‚
+    pause
     exit /b 1
 )
 
-REM ÉèÖÃ±äÁ¿
-set SOURCE_FILE=main.py
-set ICON_FILE=resources/app_icon.ico
-set DIST_PATH=C:\dist\app
-set WORK_PATH=C:\dist\build
-set NAME=¹¤×÷¹¤¾ß°ü
+REM æ¿€æ´»è™šæ‹Ÿç¯å¢ƒ
+call "%VENV_PATH%\Scripts\activate.bat"
 
-cd src/
+REM è®¾ç½®æ„å»ºå‚æ•°
+set "APP_NAME=WorkKit"
+set "SRC_DIR=%BASE_DIR%\src"
+set "MAIN_SCRIPT=main.py"
+set "ICON_PATH=resources\app_icon.ico"
+set "DIST_DIR=%BASE_DIR%\dist"
+set "BUILD_DIR=%BASE_DIR%\build_temp"
 
-REM ¼ì²éÔ´ÎÄ¼şºÍÍ¼±êÎÄ¼şÊÇ·ñ´æÔÚ
-if not exist "%SOURCE_FILE%" (
-    echo ´íÎó: Ô´ÎÄ¼ş %SOURCE_FILE% ²»´æÔÚ
+echo [ä¿¡æ¯] æ­£åœ¨æ„å»ºé¡¹ç›®: %APP_NAME%
+echo [ä¿¡æ¯] æºä»£ç è·¯å¾„: %SRC_DIR%
+echo [ä¿¡æ¯] è¾“å‡ºç›®å½•: %DIST_DIR%
+
+REM åˆ‡æ¢åˆ° src ç›®å½• (ç¡®ä¿ç›¸å¯¹å¯¼å…¥å’Œèµ„æºè·¯å¾„æ­£ç¡®)
+pushd "%SRC_DIR%"
+
+REM æ£€æŸ¥å…¥å£æ–‡ä»¶
+if not exist "%MAIN_SCRIPT%" (
+    echo [é”™è¯¯] æ‰¾ä¸åˆ°å…¥å£æ–‡ä»¶: %SRC_DIR%\%MAIN_SCRIPT%
+    popd
     exit /b 1
 )
-if not exist "%ICON_FILE%" (
-    echo ¾¯¸æ: Í¼±êÎÄ¼ş %ICON_FILE% ²»´æÔÚ£¬½«Ê¹ÓÃÄ¬ÈÏÍ¼±ê
-    set ICON_FILE=
-)
 
-REM Ö´ĞĞ PyInstaller
-echo ÕıÔÚ´ò°ü£¬ÇëÉÔºò...
+REM æ‰§è¡Œ PyInstaller
+REM æ³¨æ„: å·²ç§»é™¤ç‰¹å®šç”¨æˆ·çš„ç¡¬ç¼–ç  DLL è·¯å¾„ã€‚
+REM å¦‚æœé‡åˆ° DLL ç¼ºå¤±é”™è¯¯ï¼Œè¯·ç¡®ä¿è™šæ‹Ÿç¯å¢ƒå®Œæ•´ï¼Œæˆ–æ‰‹åŠ¨æ·»åŠ  --add-binary å‚æ•°ã€‚
+echo [ä¿¡æ¯] å¼€å§‹æ‰“åŒ…...
+
 pyinstaller ^
-    -w ^
-    -n "%NAME%"^
-    -i "%ICON_FILE%" ^
-    %SOURCE_FILE% ^
-    -p ./ ^
-    --add-binary "C:/Users/wt/.conda/envs/py310/Library/bin/libexpat.dll;." ^
-    --add-binary "C:/Users/wt/.conda/envs/py310/Library/bin/ffi.dll;." ^
-    --add-data resources;resources ^
-    --add-data alembic;alembic ^
-    --add-data alembic.ini;. ^
-    --hidden-import ipaddress ^
-    --hidden-import=shiboken6 ^
-    --hidden-import=PySide6.QtCore ^
-    --hidden-import=PySide6.QtGui ^
-    --hidden-import=PySide6.QtWidgets ^
-    --distpath "%DIST_PATH%" ^
-    --workpath "%WORK_PATH%" ^
-    --clean ^
     --noconfirm ^
-    --noupx
+    --onedir ^
+    --windowed ^
+    --name "%APP_NAME%" ^
+    --icon "%ICON_PATH%" ^
+    --paths "%SRC_DIR%" ^
+    --add-data "resources;resources" ^
+    --add-data "alembic;alembic" ^
+    --add-data "alembic.ini;." ^
+    --hidden-import "ipaddress" ^
+    --hidden-import "shiboken6" ^
+    --hidden-import "PySide6.QtCore" ^
+    --hidden-import "PySide6.QtGui" ^
+    --hidden-import "PySide6.QtWidgets" ^
+    --distpath "%DIST_DIR%" ^
+    --workpath "%BUILD_DIR%" ^
+    --clean ^
+    --noupx ^
+    "%MAIN_SCRIPT%"
 
-REM ¼ì²é PyInstaller ÊÇ·ñ³É¹¦
 if errorlevel 1 (
-    echo ´íÎó: PyInstaller ´ò°üÊ§°Ü
+    echo [é”™è¯¯] PyInstaller æ„å»ºå¤±è´¥ã€‚
+    popd
     exit /b 1
 )
 
-cd ../
-REM ´ò°üÍê³ÉÌáÊ¾
-echo ´ò°üÍê³É£¬Êä³öÄ¿Â¼: %DIST_PATH%
-exit /b 0
+popd
+
+echo.
+echo [æˆåŠŸ] æ„å»ºå®Œæˆ!
+echo å¯æ‰§è¡Œæ–‡ä»¶ä½äº: %DIST_DIR%\%APP_NAME%\%APP_NAME%.exe
+echo.
+pause
